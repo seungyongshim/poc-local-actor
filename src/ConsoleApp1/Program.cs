@@ -12,7 +12,11 @@ var props = Props.FromProducer(() =>
 var pid = root.SpawnNamed(props, nameof(ProxyActor));
 
 root.Send(pid, new MessageId("1"));
+root.Send(pid, new MessageId("1"));
 
+await Task.Delay(3100);
+
+root.Send(pid, new MessageId("1"));
 root.Send(pid, new MessageId("1"));
 
 await Task.Delay(5000);

@@ -1,51 +1,11 @@
-using Proto;
-
-public interface IMessageId
-{
-    public string Id { get; init; }
-};
-
-public record MessageId(string Id) : IMessageId
-{
-}
-
-public class ProxyActor : IActor
-{
-
-    public ProxyActor(Props propsChild)
-    {
-        PropsChild = propsChild;
-    }
-
-    public Props PropsChild { get; }
-
-    public Task ReceiveAsync(IContext context) => context.Message switch
-    {
-        IMessageId v => Task.Factory.StartNew(() => 
-        {
-            var pid = PID.FromAddress(context.Self.Address, $"{context.Self.Id}/{v.Id}");
-
-            if (!context.Children.Contains(pid))
-            {
-                var p = context.SpawnNamed(PropsChild, v.Id);
-                context.Forward(p);
-            }
-            else
-            {
-                context.Forward(pid);
-            }
-
-            
-        }),
-        _ => Task.CompletedTask
-    };
-
-}
+﻿using Proto;
 
 public class ConsoleActor : IActor
 {
     public Task ReceiveAsync(IContext context) => context.Message switch
     {
+        Started => Task.Factory.StartNew(() => context.SetReceiveTimeout(TimeSpan.FromSeconds(3))),
+        ReceiveTimeout => Task.Factory.StartNew(() => context.Send(context.Parent, new ProxyPoisonTarget(context.Self))),
         { } msg => Task.Factory.StartNew(() => Console.WriteLine(msg))
     };
 }
