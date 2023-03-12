@@ -1,5 +1,7 @@
 version: '2.1'
 
 services:
-  hello:
-    image: hello-world
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
