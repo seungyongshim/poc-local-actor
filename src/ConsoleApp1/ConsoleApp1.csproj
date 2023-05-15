@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="DistributedLock.Redis" Version="1.0.2" />
-    <PackageReference Include="Proto.Actor" Version="1.1.0" />
+    <PackageReference Include="Proto.Actor" Version="1.2.0" />
   </ItemGroup>
 
 </Project>
